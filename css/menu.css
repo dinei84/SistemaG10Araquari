@@ -1,0 +1,213 @@
+/* RESET CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* IMPORTAÇÃO DE FONTES */
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght@24,400,0,0&icon_names=note_alt');
+
+/* VARIÁVEIS DE CORES */
+:root {
+  --primary-color: #721738;
+  --secondary-color: #333;
+  --tertiary-color: #560e24;
+  --quaternary-color: #ffffff;
+  --quintenary-color: #66253d;
+}
+
+/* ESTILO GLOBAL */
+html, body {
+  font-family: "Lato", sans-serif;
+  background-image: url('../../assets/g10ok.jpeg');
+  opacity: 1.0; /* Ajuste para transparência */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(255, 255, 255, 0.562); /* Ajuste para transparência */
+  background-blend-mode: lighten;
+  height: 100vh; /* Altura definida para 100% da viewport */
+  width: 100vw; /* Largura definida para 100% da viewport */
+  overflow: hidden; /* Impede o scrolling */
+  background-attachment: fixed;
+}
+
+/* ESTILOS DO HEADER */
+.hello {
+  text-align: center;
+  font-size: 2rem;
+  color: var(--quaternary-color);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.team {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.team img {
+  width: 80%;
+  max-width: 800px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* ESTILOS DO SIDEBAR */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 60px;
+  background: var(--tertiary-color);
+  padding: 6px 14px;
+  transition: all 0.5s ease;
+  z-index: 1000;
+  overflow-y: auto; /* Scrolling interno caso seja necessário */
+}
+
+.sidebar.active {
+  width: 240px;
+}
+
+.hamburger-menu {
+  cursor: pointer;
+  padding: 15px 0;
+}
+
+.hamburger {
+  width: 30px;
+  height: 3px;
+  background: #fff;
+  position: relative;
+}
+
+.hamburger:before,
+.hamburger:after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 3px;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.hamburger:before {
+  top: -8px;
+}
+
+.hamburger:after {
+  top: 8px;
+}
+
+/* LISTA DE NAVEGAÇÃO */
+.nav-list {
+  margin-top: 20px;
+  padding: 0;
+}
+
+.nav-list li {
+  list-style: none;
+  margin: 8px 0;
+}
+
+.nav-list li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--quaternary-color);
+  padding: 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.nav-list li a:hover {
+  background: #34495e;
+}
+
+.nav-list li a i {
+  min-width: 30px;
+  font-size: 20px;
+}
+
+.nav-list li a span {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.active .nav-list li a span {
+  opacity: 1;
+}
+
+/* AJUSTE DO CONTEÚDO PRINCIPAL */
+.container {
+  transition: margin-left 0.5s ease;
+  height: 100vh;
+  overflow-y: auto; /* Permite rolagem apenas no conteúdo principal se necessário */
+  padding-bottom: 20px; /* Espaço para evitar que o conteúdo toque o fundo */
+}
+
+.sidebar.active + .container {
+  margin-left: 240px;
+}
+
+/* Melhorias na responsividade do menu */
+@media screen and (max-width: 768px) {
+  .sidebar {
+    width: 0;
+    overflow: hidden;
+    position: fixed;
+    left: -240px;
+    transition: left 0.3s ease;
+  }
+  h1{
+    font-size: 25px;
+  }
+
+  .sidebar.active {
+    left: 0;
+    width: 240px;
+  }
+
+  .nav-list li a span {
+    opacity: 1;
+  }
+
+  .hamburger-menu {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1100;
+  }
+
+  .hamburger {
+    width: 35px;
+    height: 4px;
+  }
+
+  .hamburger:before, .hamburger:after {
+    width: 35px;
+    height: 4px;
+  }
+
+  /* Ajustando o conteúdo para telas pequenas */
+  .container {
+    margin-left: 0;
+  }
+
+  .sidebar.active + .container {
+    margin-left: 0;
+  }
+
+  .team img {
+    width: 90%;
+  }
+
+  .hello {
+    font-size: 2.5rem;
+  }
+}
