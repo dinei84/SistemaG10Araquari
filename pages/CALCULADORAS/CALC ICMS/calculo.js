@@ -1,15 +1,6 @@
-import { auth } from "../../../js/firebase-config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", function () {
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = "/login.html";
-    } else {
-      console.log("Usuário autenticado:", user.email);
-    }
-  });
-
+  
   function formatNumber(number) {
     return number.toLocaleString("pt-BR", {
       minimumFractionDigits: 2,
