@@ -1,10 +1,20 @@
 
 import { db } from '../../../js/firebase-config.js';
 import { collection, getDocs, doc, deleteDoc } from '../../../js/firebase-config.js';
+import { auth } from "../../../js/firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 let drivers = [];
 
 document.addEventListener('DOMContentLoaded', async function() {
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          window.location.href = "/login.html";
+        } else {
+          console.log("Usuário autenticado:", user.email);
+        }
+      });
+
     await getDrivers();
 
     document.getElementById('backBtn').addEventListener('click', function() {

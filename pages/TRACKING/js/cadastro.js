@@ -1,4 +1,4 @@
-import { db } from "../../../js/firebase-config.js"; 
+import { db } from "../../../js/firebase-config.js";
 
 import {
   collection,
@@ -7,6 +7,16 @@ import {
   setDoc,
   getDoc,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { auth } from "../../../js/firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "/login.html";
+  } else {
+    console.log("Usuário autenticado:", user.email);
+  }
+});
 
 const traelCollection = collection(db, "trael");
 

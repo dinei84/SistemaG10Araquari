@@ -1,6 +1,17 @@
+import { auth } from "../../../js/firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
 let editIndex = null;
 
 document.getElementById('submitBtn').addEventListener('click', async function() {
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          window.location.href = "/login.html";
+        } else {
+          console.log("Usuário autenticado:", user.email);
+        }
+      });
+
     const driver = document.getElementById('driver').value;
     const phone = document.getElementById('phone').value;
     const owner = document.getElementById('owner').value;
