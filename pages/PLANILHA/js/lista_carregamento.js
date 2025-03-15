@@ -189,19 +189,38 @@ document.querySelectorAll('input[type="number"]').forEach((input) => {
 // Substitua a função window.captureAndShare por esta versão melhorada
 window.captureAndDownload = async () => {
   try {
-    alert("Preparando para captura...");
+    alert("Preparando para o download...")
 
-    // Elementos a serem ocultados
+    //Carrega os dados do frete para obter destino e pedido
+    const freteDoc = await getDoc(doc(db, "fretes", freteId));
+    let destino = "SemDestino";
+    let pedido = "SemPedido";
+
+    if (freteDoc.exists()) {
+      const freteData = freteDoc.data();
+      destino = freteData.destino || destino;
+      pedido = freteData.pedido || pedido;
+    }
+
+    // Formatar a data como DD-MM-YYYY
+    const dataAtual = new Date();
+    const dataFormatada = dataAtual.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).replace(/\//g, '-');
+
+    // Elementos a serem ocultados 
     const elementsToHide = [
-      document.getElementById("btnNovoCarregamento"),
-      document.getElementById("btn-voltar-fretes"),
-      document.querySelector('button[onclick="captureAndDownload()"]'),
-      ...document.querySelectorAll(".acoes"), // Coluna de ações
+      document.getElementById('btnNovoCarregamento'),
+      document.getElementById('btn-voltar-fretes'),
+      document.querySelector('button[onclick ="captureAndDownload()]'),
+      ...document.querySelectorAll('.acoes'),
     ];
 
     // Ocultar elementos
-    elementsToHide.forEach((element) => {
-      if (element) element.classList.add("hide-for-print");
+    elementsToHide.forEach((e)=>{
+      if (e) e.classList.add("hide-for-print");
     });
 
     // Configurações do html2canvas
@@ -211,7 +230,6 @@ window.captureAndDownload = async () => {
       useCORS: true,
       scrollY: -window.scrollY,
       onclone: (clonedDoc) => {
-        // Garantir que elementos permaneçam ocultos no clone
         clonedDoc.querySelectorAll(".hide-for-print").forEach((element) => {
           element.style.display = "none";
         });
@@ -222,27 +240,30 @@ window.captureAndDownload = async () => {
     const canvas = await html2canvas(container, options);
     const dataUrl = canvas.toDataURL("image/png", 1.0);
 
-    // Criar e disparar download
-    const link = document.createElement("a");
-    link.download = `Carregamentos_${freteId}_${new Date()
-      .toISOString()
-      .slice(0, 10)}.png`;
+    //Criar nome do arquivo com destino, data e pedido
+    const nomeArquivo = `${destino} ${dataFormatada} ${pedido}.png`;
+
+    //Criar e disparar downoload
+    const link = document.createElement('a');
+    link.download = nomeArquivo;
     link.href = dataUrl;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // Restaurar elementos
-    elementsToHide.forEach((element) => {
-      if (element) element.classList.remove("hide-for-print");
+    //Restaurar elementos
+    elementsToHide.forEach((e)=>{
+      if(e) e.classList.remove("hide-for-print");
     });
-
+    
     alert("Imagem gerada com sucesso!");
+
   } catch (error) {
-    console.error("Erro na captura:", error);
-    alert("Falha ao gerar imagem");
+    console.error("Erro na captuta", error);
+    alert("Falha ao gerar imagem")
   }
 };
+  
 
 // Carrega os carregamentos quando a página é aberta
 carregarCarregamentos();
