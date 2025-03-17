@@ -10,6 +10,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { auth } from "../../../js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import loadingManager from "../../../js/loading.js"
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -44,6 +45,7 @@ document.querySelectorAll("#valordoFrete, #pedagio").forEach((input) => {
 
 async function carregarFretes() {
   try {
+    loadingManager.show();
     const fretesRef = collection(db, "fretes");
     const q = query(fretesRef, orderBy("data", "desc")); 
 
@@ -52,11 +54,11 @@ async function carregarFretes() {
     let totalSaldo = 0;
 
     querySnapshot.forEach((doc) => {
-      const frete = doc.data();
-      const liberado = parseFloat(frete.liberado) || 0;
-      const carregado = parseFloat(frete.carregado) || 0;
-      const saldo = liberado - carregado;
-      totalSaldo += saldo;
+        const frete = doc.data();
+        const liberado = parseFloat(frete.liberado) || 0;
+        const carregado = parseFloat(frete.carregado) || 0;
+        const saldo = liberado - carregado;
+        totalSaldo += saldo;
 
       const linha = `
         <tr>
@@ -80,9 +82,11 @@ async function carregarFretes() {
     });
 
     atualizarTotalSaldo(totalSaldo);
-  } catch (error) {
-    console.error("Erro:", error);
-  }
+    } catch (error) {
+        console.error("Erro ao carregar fretes:", error);
+    } finally {
+        loadingManager.hide();
+    }
 }
 
 function atualizarTotalSaldo(total) {
@@ -120,14 +124,17 @@ window.editarFrete = function (id) {
 window.excluirFrete = async (freteId) => {
   if (confirm("Tem certeza que deseja excluir este frete permanentemente?")) {
     try {
-      await deleteDoc(doc(db, "fretes", freteId));
-      carregarFretes();
-      alert("Frete excluído com sucesso!");
+        loadingManager.show();
+        await deleteDoc(doc(db, "fretes", freteId));
+        await carregarFretes(); 
+        alert("Frete excluído com sucesso!");
     } catch (error) {
-      console.error("Erro ao excluir frete:", error);
-      alert("Erro ao excluir frete");
+        console.error("Erro ao excluir frete:", error);
+        alert("Erro ao excluir frete");
+    } finally {
+        loadingManager.hide();
     }
-  }
+}
 };
 
 window.listarCarregamentos = (freteId) => {
@@ -137,11 +144,12 @@ window.listarCarregamentos = (freteId) => {
 // Função para mostrar o popup
 window.visualizarFrete = async (freteId) => {
   try {
+    loadingManager.show();
     const docRef = doc(db, "fretes", freteId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      const frete = docSnap.data();
+        const frete = docSnap.data();
       const saldo =
         (parseFloat(frete.liberado) || 0) - (parseFloat(frete.carregado) || 0);
 
@@ -178,7 +186,9 @@ window.visualizarFrete = async (freteId) => {
   } catch (error) {
     console.error("Erro ao carregar frete:", error);
     alert("Erro ao carregar detalhes do frete");
-  }
+} finally {
+    loadingManager.hide();
+}
 };
 
 function abrirPopup() {
