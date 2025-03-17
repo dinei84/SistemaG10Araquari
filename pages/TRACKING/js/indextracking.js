@@ -8,6 +8,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { auth } from "../../../js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import importManager from "../../../js/loading.js"
+import loadingManager from "../../../js/loading.js";
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -28,6 +30,7 @@ function getSaudacao() {
 
 async function carregarCarregamentos() {
   try {
+    loadingManager.show();
     const querySnapshot = await getDocs(traelCollection);
     const cargas = document.getElementById("cargas-lista");
     cargas.innerHTML = "";
@@ -82,6 +85,8 @@ async function carregarCarregamentos() {
   } catch (error) {
     console.error("Erro ao carregar cargas: ", error);
     alert("Erro ao carregar cargas");
+  } finally{
+    loadingManager.hide();
   }
 }
 
@@ -92,12 +97,15 @@ window.editarCarga = (id) => {
 window.excluirCarga = async (id) => {
   if (confirm("Deseja realmente excluir esta carga?")) {
     try {
+      loadingManager.show();
       await deleteDoc(doc(db, "trael", id));
       alert("Carga excluída com sucesso!");
       carregarCarregamentos();
     } catch (error) {
       console.error("Erro ao excluir carga: ", error);
       alert("Erro ao excluir carga");
+    } finally{
+      loadingManager.hide();
     }
   }
 };

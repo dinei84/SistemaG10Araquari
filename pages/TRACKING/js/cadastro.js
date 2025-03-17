@@ -9,6 +9,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { auth } from "../../../js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import loadingManager from "../../../js/loading.js";
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -27,6 +28,7 @@ let isEditMode = !!carregamentoId;
 async function loadCarregamentoForEdit(carregamentoId) {
   if (carregamentoId) {
     try {
+      loadingManager.show();
       const docSnap = await getDoc(doc(db, "trael", carregamentoId));
       if (docSnap.exists()) {
         const carregamento = docSnap.data();
@@ -52,6 +54,8 @@ async function loadCarregamentoForEdit(carregamentoId) {
     } catch (error) {
       console.log("Error getting document:", error);
       alert("Erro ao carregar carregamento");
+    } finally{
+      loadingManager.hide();
     }
   }
 }
@@ -90,6 +94,7 @@ document.getElementById("carga-form").addEventListener("submit", async (e) => {
 
   if (isEditMode) {
     try {
+      loadingManager.show();
       await setDoc(doc(db, "trael", carregamentoId), cargaData);
       alert("Carregamento atualizado com sucesso!");
       window.location.href = "indextracking.html";
@@ -105,6 +110,8 @@ document.getElementById("carga-form").addEventListener("submit", async (e) => {
     } catch (error) {
       console.error("Error adding document: ", error);
       alert("Erro ao cadastrar carregamento");
+    }finally{
+      loadingManager.hide();
     }
   }
 });
