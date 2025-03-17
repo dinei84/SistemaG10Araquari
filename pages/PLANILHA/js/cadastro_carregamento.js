@@ -10,6 +10,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { auth } from "../../../js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import loadingManager from "../../../js/loading.js";
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -56,6 +57,7 @@ async function loadCarregamentoForEdit() {
   if (!isEditMode) return;
 
   try {
+    loadingManager.show();
     const carregamentoDoc = await getDoc(
       doc(db, "fretes", freteId, "carregamentos", carregamentoId)
     );
@@ -89,6 +91,8 @@ async function loadCarregamentoForEdit() {
   } catch (error) {
     console.error("Erro ao carregar:", error);
     alert("Erro ao carregar dados do carregamento");
+  } finally{
+    loadingManager.hide();
   }
 }
 

@@ -11,6 +11,7 @@ import {
 
 import { auth } from "../../../js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import loadingManager from "../../../js/loading.js";
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -62,6 +63,7 @@ function setupNumberInput(inputId) {
 async function loadFreteForEdit(freteId) {
   if (freteId) {
     try {
+      loadingManager.show();
       const docRef = doc(db, "fretes", freteId);
       const docSnap = await getDoc(docRef);
 
@@ -102,6 +104,8 @@ async function loadFreteForEdit(freteId) {
     } catch (error) {
       console.error("Erro ao carregar frete:", error);
       alert("Erro ao carregar dados do frete");
+    }finally{
+      loadingManager.hide();
     }
   }
 }

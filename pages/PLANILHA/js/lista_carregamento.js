@@ -11,6 +11,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { auth } from "../../../js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import loadingManager from "../../../js/loading.js";
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -48,6 +49,7 @@ document.getElementById(
 async function carregarCarregamentos() {
   try {
     // Carrega informações do frete específico
+    loadingManager.show();
     const freteDoc = await getDoc(doc(db, "fretes", freteId));
     if (freteDoc.exists()) {
       const freteData = freteDoc.data();
@@ -137,6 +139,8 @@ async function carregarCarregamentos() {
   } catch (error) {
     console.error("Erro ao carregar dados:", error);
     alert("Erro ao carregar dados. Verifique o console para mais detalhes.");
+  } finally{
+    loadingManager.hide();
   }
 }
 
@@ -149,6 +153,7 @@ window.excluirCarregamento = async (carregamentoId) => {
     confirm("Tem certeza que deseja excluir este carregamento permanentemente?")
   ) {
     try {
+      loadingManager.show();
       const carregamentoRef = doc(
         db,
         "fretes",
@@ -171,6 +176,8 @@ window.excluirCarregamento = async (carregamentoId) => {
       alert("Carregamento excluído com sucesso!");
     } catch (error) {
       console.error("Erro ao excluir carregamento:", error);
+    } finally {
+      loadingManager.hide();
     }
   }
 };
