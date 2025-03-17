@@ -73,7 +73,7 @@ async function carregarCarregamentos() {
                     <td>${freteData.embalagem || "N/A"}</td>
                     <td>${freteData.liberado || "N/A"}</td>
                     <td>${freteData.marcado || "N/A"}</td>
-                    <td>${freteData.saldo || "N/A"}</td>
+                    <td>${freteData.saldo || "00.000"}</td>
                     <td>${freteData.frempresa || "N/A"}</td>
                     <td>${freteData.motorista || "N/A"}</td>
                     <td>${freteData.pedido || "N/A"}</td>

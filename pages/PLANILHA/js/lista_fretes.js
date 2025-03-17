@@ -154,8 +154,8 @@ window.visualizarFrete = async (freteId) => {
                 <p><strong>Data:</strong> ${frete.data}</p>
                 <p><strong>Cliente:</strong> ${frete.cliente}</p>
                 <p><strong>Destino:</strong> ${frete.destino}</p>
-                <p><strong>Pedido:</strong> ${frete.pedido}</p>
-                <p><strong>Frete Empresa:</strong> ${frete.frempresa}</p>
+                <P><strong>Troca de NFe: </strong>${frete.destinotroca}</p>
+                <p><strong>Pedido:</strong> ${frete.pedido}</p>                
                 <p><strong>Liberado:</strong> ${parseFloat(
                   frete.liberado
                 ).toFixed(2)} Ton</p>
@@ -163,11 +163,11 @@ window.visualizarFrete = async (freteId) => {
                   frete.carregado
                 ).toFixed(2)} Ton</p>
                 <p><strong>Saldo:</strong> ${saldo.toFixed(2)} Ton</p>
-                <p><strong>Valor do Frete:</strong> R$ ${
-                  frete.valordoFrete || "00,00"
+                <p><strong>Valor do Frete:</strong> ${
+                  frete.frempresa || "00,00"
                 }</p>
-                <p><strong>Frete Motorista:</strong> R$ ${
-                  frete.fremotorista || "00,00"
+                <p><strong>Frete Motorista:</strong> ${
+                  frete.motorista || "00,00"
                 }</p>
                 <p><strong>Localização:</strong> ${
                   frete.localizacao || "Nenhuma"
