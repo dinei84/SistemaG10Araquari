@@ -45,7 +45,7 @@ document.querySelectorAll("#valordoFrete, #pedagio").forEach((input) => {
 async function carregarFretes() {
   try {
     const fretesRef = collection(db, "fretes");
-    const q = query(fretesRef, orderBy("data", "desc")); // Ordena por data
+    const q = query(fretesRef, orderBy("data", "desc")); 
 
     const querySnapshot = await getDocs(q);
     corpoTabela.innerHTML = "";
