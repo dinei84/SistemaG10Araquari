@@ -8,6 +8,8 @@ import {
     getDoc,
     deleteDoc,
     setDoc,
+    query,
+    orderBy,
     getDocs,
     doc
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js"; // Versão atualizada para 11.4.0
@@ -30,4 +32,4 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 
 // Exportando funções do Firestore
-export { collection, addDoc, getDoc, doc, deleteDoc, getDocs, setDoc };
+export { collection, addDoc, getDoc, doc, deleteDoc, getDocs, setDoc, query, orderBy };

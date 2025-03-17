@@ -4,6 +4,8 @@ import {
   getDocs,
   doc,
   getDoc,
+  query,
+  orderBy,
   deleteDoc,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { auth } from "../../../js/firebase-config.js";
@@ -42,7 +44,10 @@ document.querySelectorAll("#valordoFrete, #pedagio").forEach((input) => {
 
 async function carregarFretes() {
   try {
-    const querySnapshot = await getDocs(collection(db, "fretes"));
+    const fretesRef = collection(db, "fretes");
+    const q = query(fretesRef, orderBy("data", "desc")); // Ordena por data
+
+    const querySnapshot = await getDocs(q);
     corpoTabela.innerHTML = "";
     let totalSaldo = 0;
 
@@ -54,33 +59,23 @@ async function carregarFretes() {
       totalSaldo += saldo;
 
       const linha = `
-                        <tr>
-                            <td>${frete.data}</td>
-                            <td>${frete.cliente}</td>
-                            <td style="color: #f44336; font-weight: 500;">${
-                              frete.destino
-                            }</td>
-                            <td>${frete.pedido}</td>
-                            <td>${frete.frempresa}</td>
-                            <td>${liberado.toFixed(2)} Ton</td>
-                            <td>${carregado.toFixed(2)} Ton</td>
-                            <td>${saldo.toFixed(2)} Ton</td>
-                            <td class="acoes"> 
-                                <button class="btn-visualizar" onclick="visualizarFrete('${
-                                  doc.id
-                                }')">Visualizar</button>
-                                <button class="btn-editar" onclick="editarFrete('${
-                                  doc.id
-                                }')">Editar</button> 
-                                <button class="btn-excluir" onclick="excluirFrete('${
-                                  doc.id
-                                }')">Excluir</button> 
-                                <button class="btn-carregamento" onclick="listarCarregamentos('${
-                                  doc.id
-                                }')">Carregamentos</button> 
-                            </td>
-                        </tr>
-                    `;
+        <tr>
+          <td>${frete.data}</td>
+          <td>${frete.cliente}</td>
+          <td style="color: #f44336; font-weight: 500;">${frete.destino}</td>
+          <td>${frete.pedido}</td>
+          <td>${frete.frempresa}</td>
+          <td>${liberado.toFixed(2)} Ton</td>
+          <td>${carregado.toFixed(2)} Ton</td>
+          <td>${saldo.toFixed(2)} Ton</td>
+          <td class="acoes"> 
+            <button class="btn-visualizar" onclick="visualizarFrete('${doc.id}')">Visualizar</button>
+            <button class="btn-editar" onclick="editarFrete('${doc.id}')">Editar</button> 
+            <button class="btn-excluir" onclick="excluirFrete('${doc.id}')">Excluir</button> 
+            <button class="btn-carregamento" onclick="listarCarregamentos('${doc.id}')">Carregamentos</button> 
+          </td>
+        </tr>
+      `;
       corpoTabela.innerHTML += linha;
     });
 
@@ -154,7 +149,7 @@ window.visualizarFrete = async (freteId) => {
                 <p><strong>Data:</strong> ${frete.data}</p>
                 <p><strong>Cliente:</strong> ${frete.cliente}</p>
                 <p><strong>Destino:</strong> ${frete.destino}</p>
-                <P><strong>Troca de NFe: </strong>${frete.destinotroca}</p>
+                <P><strong>Troca de NFe: </strong>${frete.destinotroca || "Sem Troca de NFe"}</p>
                 <p><strong>Pedido:</strong> ${frete.pedido}</p>                
                 <p><strong>Liberado:</strong> ${parseFloat(
                   frete.liberado
