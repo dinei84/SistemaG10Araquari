@@ -1,17 +1,10 @@
 import { auth } from "../../../js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { db } from '../../../js/firebase-config.js';
 
 let editIndex = null;
 
-document.getElementById('submitBtn').addEventListener('click', async function() {
-    onAuthStateChanged(auth, (user) => {
-        if (!user) {
-          window.location.href = "/login.html";
-        } else {
-          console.log("Usuário autenticado:", user.email);
-        }
-      });
-
+document.getElementById('submitBtn').addEventListener('click', async function() {    
     const driver = document.getElementById('driver').value;
     const phone = document.getElementById('phone').value;
     const owner = document.getElementById('owner').value;
@@ -30,7 +23,7 @@ document.getElementById('submitBtn').addEventListener('click', async function() 
 });
 
 document.getElementById('viewListBtn').addEventListener('click', function() {
-    window.location.href = 'lista.html';
+    window.location.href = './lista.html';
 });
 
 document.getElementById('clearBtn').addEventListener('click', function() {

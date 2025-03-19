@@ -6,21 +6,17 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/fi
 
 let drivers = [];
 
+// Adiciona evento DOMContentLoaded para carregar dados ao carregar a página
 document.addEventListener('DOMContentLoaded', async function() {
-    onAuthStateChanged(auth, (user) => {
-        if (!user) {
-          window.location.href = "/login.html";
-        } else {
-          console.log("Usuário autenticado:", user.email);
-        }
-      });
-
+    // Chama a função para buscar os dados
     await getDrivers();
 
+    // Adiciona evento ao botão de voltar
     document.getElementById('backBtn').addEventListener('click', function() {
         window.location.href = 'contato.html';
     });
 
+    // Adiciona evento de input para busca
     document.getElementById('searchInput').addEventListener('input', function() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const filteredDrivers = drivers.filter(driver => {
@@ -31,53 +27,47 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderTable(filteredDrivers);
     });
 
+    // Adiciona evento ao botão de download
 document.getElementById('downloadBtn').addEventListener('click', function() {
-        if (drivers.length === 0) {
-            alert("Nenhum dado disponível para download.");
-            return;
-        }
+    if (drivers.length === 0) {
+        alert("Nenhum dado disponível para download.");
+        return;
+    }
 
-        const dataToExport = drivers.map(driver => ({
-            Motorista: driver.driver,
-            Telefone: driver.phone,
-            Frotista: driver.owner
-        }));
+    // Mapeia os dados para um formato adequado
+    const dataToExport = drivers.map(driver => ({
+        Motorista: driver.driver,
+        Telefone: driver.phone,
+        Frotista: driver.owner
+    }));
 
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(dataToExport);
-        XLSX.utils.book_append_sheet(wb, ws, "Motoristas");
-        XLSX.writeFile(wb, 'motoristas.xlsx');
-    });
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    XLSX.utils.book_append_sheet(wb, ws, "Motoristas");
+    XLSX.writeFile(wb, 'motoristas.xlsx');
+});
 });
 
+// Função para buscar dados do Firestore
 async function getDrivers() {
-    try {
-        const driversCollection = collection(db, 'drivers');
-        const querySnapshot = await getDocs(driversCollection);
-        drivers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        sortAndRenderTable();
-    } catch (error) {
-        console.error("Erro ao buscar motoristas:", error);
-        alert("Erro ao buscar dados dos motoristas. Verifique o console para mais detalhes.");
-    }
+    const querySnapshot = await db.collection('drivers').get();
+    drivers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    sortAndRenderTable();
 }
 
+// Atualiza a função sortAndRenderTable para usar os dados buscados
 function sortAndRenderTable() {
     drivers.sort((a, b) => {
-        const driverA = a.driver.toLowerCase();
-        const driverB = b.driver.toLowerCase();
-        const ownerA = a.owner.toLowerCase();
-        const ownerB = b.owner.toLowerCase();
-
-        if (driverA < driverB) return -1;
-        if (driverA > driverB) return 1;
-        if (ownerA < ownerB) return -1;
-        if (ownerA > ownerB) return 1;
+        if (a.driver < b.driver) return -1;
+        if (a.driver > b.driver) return 1;
+        if (a.owner < b.owner) return -1;
+        if (a.owner > b.owner) return 1;
         return 0;
     });
     renderTable(drivers);
 }
 
+// Renderiza a tabela com os dados fornecidos
 function renderTable(driversToRender) {
     const tableBody = document.querySelector('#driversTable tbody');
     tableBody.innerHTML = '';
@@ -126,13 +116,7 @@ async function deleteDriver(id) {
     if (!confirm('Tem certeza que deseja apagar este motorista?')) {
         return;
     }
-    try {
-        const driverDoc = doc(db, 'drivers', id);
-        await deleteDoc(driverDoc);
-        drivers = drivers.filter(driver => driver.id !== id);
-        sortAndRenderTable();
-    } catch (error) {
-        console.error("Erro ao apagar motorista:", error);
-        alert("Erro ao apagar motorista. Verifique o console para mais detalhes.");
-    }
+    await deleteDoc(doc(db, 'drivers', id));
+    drivers = drivers.filter(driver => driver.id !== id);
+    sortAndRenderTable();
 }
