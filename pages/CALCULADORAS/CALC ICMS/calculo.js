@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-  
+
   function formatNumber(number) {
     return number.toLocaleString("pt-BR", {
       minimumFractionDigits: 2,
@@ -40,40 +40,21 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   const icmsTaxas = {
-    SC: {
-      MT: 7,
-      MS: 7,
-      PR: 12,
-      SC: 17,
-      BA: 7,
-      TO: 7,
-      MT: 7,
-      PI: 7,
-      GO: 7,
-      MA: 7,
-      MG: 12,
-      RJ: 12,
-      RS: 12,
-      SP: 12,
-      NA: 0,
-    },
+    SC: { MT: 7, MS: 7, PR: 12, SC: 17, BA: 7, TO: 7, MT: 7, PI: 7, GO: 7, MA: 7, MG: 12, RJ: 12, RS: 12, SP: 12, NA: 0, },
     PR: { MT: 7, PR: 0, SC: 12 },
+    SP: { SP: 0, PR: 12, SC: 12, PA: 12, BA: 12, PI: 12, GO: 12, MG: 12, RJ: 12, RS: 12, NA: 0 },
+    RJ: { RJ: 0, PR: 12, SC: 12, PA: 12, BA: 12, PI: 12, GO: 12, MG: 12, RS: 12, SP: 12, NA: 0 },
+    RS: { RS: 0, PR: 12, SC: 12, PA: 12, BA: 12, PI: 12, GO: 12, MG: 12, RJ: 12, SP: 12, NA: 0 },
+    BA: { BA: 0, PR: 12, SC: 12, PA: 12, PI: 12, GO: 12, MG: 12, RJ: 12, RS: 12, SP: 12, NA: 0 },
+    TO: { TO: 0, PR: 12, SC: 12, PA: 12, PI: 12, GO: 12, MG: 12, RJ: 12, RS: 12, SP: 12, NA: 0 },
+    PA: { PA: 0, PR: 12, SC: 12, BA: 12, PI: 12, GO: 12, MG: 12, RJ: 12, RS: 12, SP: 12, NA: 0 },
+    PI: { PI: 0, PR: 12, SC: 12, PA: 12, BA: 12, GO: 12, MG: 12, RJ: 12, RS: 12, SP: 12, NA: 0 },
+    MG: { MG: 0, PR: 12, SC: 12, PA: 12, BA: 12, PI: 12, GO: 12, RJ: 12, RS: 12, SP: 12, NA: 0 },
+    MS: { MS: 0, PR: 12, SC: 12, PA: 12, BA: 12, PI: 12, GO: 12, MG: 12, RJ: 12, RS: 12, SP: 12, NA: 0 },
+    MT: { MS: 0, PR: 12, SC: 12, PA: 12, BA: 12, PI: 12, GO: 12, MG: 12, RJ: 12, RS: 12, SP: 12, NA: 0 },
     MS: { MS: 0, MT: 12, PA: 12, RO: 12, PI: 12, GO: 12, MA: 12 },
     GO: { MT: 7, PR: 12, SC: 12, GO: 0 },
-    MT: {
-      MT: 0,
-      PR: 12,
-      SC: 12,
-      PA: 12,
-      BA: 12,
-      PI: 12,
-      GO: 12,
-      MG: 12,
-      RJ: 12,
-      RS: 12,
-      SP: 12,
-      NA: 0,
-    },
+    MT: { MT: 0, PR: 12, SC: 12, PA: 12, BA: 12, PI: 12, GO: 12, MG: 12, RJ: 12, RS: 12, SP: 12, NA: 0, },
   };
 
   elementos.trocadenfe.addEventListener("change", function () {
