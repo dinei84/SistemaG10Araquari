@@ -1,6 +1,6 @@
-import { auth } from "../../../js/firebase-config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import { db } from '../../../js/firebase-config.js';
+import { collection, getDocs, doc, deleteDoc, addDoc, setDoc, getDoc } 
+    from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 let editIndex = null;
 
@@ -10,13 +10,18 @@ document.getElementById('submitBtn').addEventListener('click', async function() 
     const owner = document.getElementById('owner').value;
 
     if (driver && phone && owner) {
-        if (editIndex !== null) {
-            await db.collection('drivers').doc(editIndex).set({ driver, phone, owner });
-            editIndex = null;
-        } else {
-            await db.collection('drivers').add({ driver, phone, owner });
+        try {
+            if (editIndex !== null) {
+                await setDoc(doc(db, 'drivers', editIndex), { driver, phone, owner });
+                editIndex = null;
+            } else {
+                await addDoc(collection(db, 'drivers'), { driver, phone, owner });
+                alert('Motorista salvo com sucesso!');
+            }
+            document.getElementById('driverForm').reset();
+        } catch (error) {
+            console.error("Erro ao salvar motorista:", error);
         }
-        document.getElementById('driverForm').reset();
     } else {
         alert('Por favor, preencha todos os campos.');
     }
@@ -35,12 +40,18 @@ document.getElementById('clearBtn').addEventListener('click', function() {
 document.addEventListener('DOMContentLoaded', async function() {
     const editIndexStored = localStorage.getItem('editIndex');
     if (editIndexStored !== null) {
-        const doc = await db.collection('drivers').doc(editIndexStored).get();
-        const driverData = doc.data();
-        document.getElementById('driver').value = driverData.driver;
-        document.getElementById('phone').value = driverData.phone;
-        document.getElementById('owner').value = driverData.owner;
-        editIndex = editIndexStored;
+        try {
+            const driverDoc = await getDoc(doc(db, 'drivers', editIndexStored));
+            if (driverDoc.exists()) {
+                const driverData = driverDoc.data();
+                document.getElementById('driver').value = driverData.driver;
+                document.getElementById('phone').value = driverData.phone;
+                document.getElementById('owner').value = driverData.owner;
+                editIndex = editIndexStored;
+            }
+        } catch (error) {
+            console.error("Erro ao carregar motorista para edição:", error);
+        }
         localStorage.removeItem('editIndex');
     }
 });
