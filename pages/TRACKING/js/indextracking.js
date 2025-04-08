@@ -62,7 +62,7 @@ async function carregarCarregamentos() {
                             ""
                           )}?text=${encodeURIComponent(
                             getSaudacao() +
-                              `, preciso saber onde esta o motorista da placa ${carga.placa}`
+                              `, ${carga.nome}, preciso saber sua localização.`
                           )}" target="_blank">
                         ${carga.telefone}
                     </a>`
