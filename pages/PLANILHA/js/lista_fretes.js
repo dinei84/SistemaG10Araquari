@@ -61,20 +61,20 @@ async function carregarFretes() {
         totalSaldo += saldo;
 
       const linha = `
-        <tr>
+        <tr onclick="window.location.href='lista_carregamento.html?freteId=${doc.id}'" style="cursor: pointer;">
           <td>${frete.data}</td>
           <td>${frete.cliente}</td>
           <td style="color: #f44336; font-weight: 500;">${frete.destino}</td>
           <td>${frete.pedido}</td>
-          <td>${frete.frempresa}</td>
+          <td>${frete.frempresa || 'N/A'}</td>
           <td>${liberado.toFixed(2)} Ton</td>
           <td>${carregado.toFixed(2)} Ton</td>
           <td>${saldo.toFixed(2)} Ton</td>
-          <td class="acoes"> 
-            <button class="btn-visualizar" onclick="visualizarFrete('${doc.id}')">Visualizar</button>
-            <button class="btn-editar" onclick="editarFrete('${doc.id}')">Editar</button> 
-            <button class="btn-excluir" onclick="excluirFrete('${doc.id}')">Excluir</button> 
-            <button class="btn-carregamento" onclick="listarCarregamentos('${doc.id}')">Carregamentos</button> 
+          <td class="acoes">
+            <button class="btn-visualizar" onclick="visualizarFrete('${doc.id}', event)">Visualizar</button>
+            <button class="btn-editar" onclick="editarFrete('${doc.id}', event)">Editar</button>
+            <button class="btn-excluir" onclick="excluirFrete('${doc.id}', event)">Excluir</button>            
+            <button class="btn-carregamento" onclick="listarCarregamentos('${doc.id}', event)">Carregamentos</button>
           </td>
         </tr>
       `;
