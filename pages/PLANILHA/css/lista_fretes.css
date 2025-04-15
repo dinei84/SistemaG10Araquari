@@ -156,6 +156,20 @@ tr:hover {
   color: white;
 }
 
+.linha-clicavel {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.linha-clicavel:hover {
+  background-color: #f5f5f5;
+}
+
+.acoes button {
+  cursor: pointer;
+  pointer-events: auto; /* Permite cliques nos botões */
+}
+
 /* popup */
 /* Estilos do Popup */
 /* Popup */

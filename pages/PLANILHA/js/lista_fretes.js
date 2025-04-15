@@ -61,7 +61,7 @@ async function carregarFretes() {
         totalSaldo += saldo;
 
       const linha = `
-        <tr onclick="window.location.href='lista_carregamento.html?freteId=${doc.id}'" style="cursor: pointer;">
+        <tr class="linha-clicavel" data-frete-id="${doc.id}">
           <td>${frete.data}</td>
           <td>${frete.cliente}</td>
           <td style="color: #f44336; font-weight: 500;">${frete.destino}</td>
@@ -79,6 +79,17 @@ async function carregarFretes() {
         </tr>
       `;
       corpoTabela.innerHTML += linha;
+    });
+
+    // Adiciona o evento de clique para as linhas
+    document.querySelectorAll('.linha-clicavel').forEach(linha => {
+      linha.addEventListener('click', (event) => {
+        // Verifica se o clique não foi em um botão de ação
+        if (!event.target.closest('.acoes button')) {
+          const freteId = linha.getAttribute('data-frete-id');
+          window.location.href = `lista_carregamento.html?freteId=${freteId}`;
+        }
+      });
     });
 
     atualizarTotalSaldo(totalSaldo);
@@ -117,11 +128,13 @@ function buscarFretes() {
 
 document.getElementById("searchInput").addEventListener("input", buscarFretes);
 
-window.editarFrete = function (id) {
-  window.location.href = `index.html?freteId=${id}`;
+window.editarFrete = function (id, event) {
+  event.stopPropagation();
+  window.location.href = `../PLANILHA/index.html?freteId=${id}`; // Caminho corrigido
 };
 
-window.excluirFrete = async (freteId) => {
+window.excluirFrete = async (freteId, event) => {
+  event.stopPropagation();
   if (confirm("Tem certeza que deseja excluir este frete permanentemente?")) {
     try {
         loadingManager.show();
@@ -134,15 +147,16 @@ window.excluirFrete = async (freteId) => {
     } finally {
         loadingManager.hide();
     }
-}
+  }
 };
 
-window.listarCarregamentos = (freteId) => {
+window.listarCarregamentos = (freteId, event) => {
+  event.stopPropagation();
   window.location.href = `lista_carregamento.html?freteId=${freteId}`;
 };
 
-// Função para mostrar o popup
-window.visualizarFrete = async (freteId) => {
+window.visualizarFrete = async (freteId, event) => {
+  event.stopPropagation();
   try {
     loadingManager.show();
     const docRef = doc(db, "fretes", freteId);
@@ -186,26 +200,23 @@ window.visualizarFrete = async (freteId) => {
   } catch (error) {
     console.error("Erro ao carregar frete:", error);
     alert("Erro ao carregar detalhes do frete");
-} finally {
+  } finally {
     loadingManager.hide();
-}
+  }
 };
 
 function abrirPopup() {
   document.querySelector(".popup-overlay").style.display = "flex";
 }
 
-// Função para fechar o popup
 window.fecharPopup = () => {
   document.getElementById("fretePopup").style.display = "none";
 };
 
-// Fechar popup ao clicar fora
 document.getElementById("fretePopup").addEventListener("click", (e) => {
   if (e.target === document.getElementById("fretePopup")) {
     fecharPopup();
   }
 });
 
-// Carrega os fretes quando a página é aberta
 carregarFretes();
