@@ -89,11 +89,12 @@
   <div>
       <button onclick="window.location.href='cadastro.html'">Adicionar Carga</button>
       <button onclick="captureAndDownload()">Imprimir / Baixar Snapshot</button>
-      <button onclick="captureAndShare()">Compartilhar no WhatsApp</button>
+      <button onclick="captureAndShareSelected()">Compartilhar Selecionados no WhatsApp</button>
   </div>
   <table>
     <thead>
       <tr>
+        <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"> Selecionar</th>
         <th>Emissão NF</th>
         <th>Placa</th>
         <th>Localização Atual</th>
@@ -103,6 +104,7 @@
         <th>Nº Conhecimento</th>
         <th>Previsão de Entrega</th>
         <th>Status Diário</th>
+        <th>Cliente</th>
         <th>Telefone</th>
         <th>Motorista</th>
         <th>Comentario</th>

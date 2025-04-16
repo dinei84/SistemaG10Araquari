@@ -35,57 +35,88 @@ async function carregarCarregamentos() {
     const cargas = document.getElementById("cargas-lista");
     cargas.innerHTML = "";
 
+    // Agrupar cargas por cliente
+    const cargasPorCliente = {};
+    
     querySnapshot.forEach((doc) => {
       const carga = doc.data();
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-                <td>${carga.datanfe || ""}</td>
-                <td>${carga.placa || ""}</td>
-                <td>${carga.localizacao || ""}</td>
-                <td>${carga.status || ""}</td>
-                <td>${carga.mercadoria || ""}</td>
-                <td>${carga.nfe || ""}</td>
-                <td>${carga.cte || ""}</td>
-                <td>${carga.previsao || ""}</td>
-                <td style="background-color: ${
-                  carga.statusdiario?.trim().toLowerCase() === "sim"
-                    ? "green"
-                    : "red"
-                };">
-                    ${carga.statusdiario || ""}
-                </td>
-                <td>
-                    ${
-                      carga.telefone
-                        ? `<a href="https://wa.me/55${carga.telefone.replace(
-                            /\D/g,
-                            ""
-                          )}?text=${encodeURIComponent(
-                            getSaudacao() +
-                              `, ${carga.nome}, preciso saber sua localização.`
-                          )}" target="_blank">
-                        ${carga.telefone}
-                    </a>`
-                        : ""
-                    }
-                </td>
-                <td>${carga.nome || ""}</td>
-                <td>${carga.comentario || ""}</td>
-                <td>
-                  <button class="btn-edit" onclick="editarCarga('${
-                    doc.id
-                  }')">Editar</button>
-                  <button class="btn-delete" onclick="excluirCarga('${
-                    doc.id
-                  }')">Excluir</button>
-                </td>
-            `;
-      cargas.appendChild(tr);
+      if (!cargasPorCliente[carga.cliente]) {
+        cargasPorCliente[carga.cliente] = [];
+      }
+      cargasPorCliente[carga.cliente].push({ id: doc.id, ...carga });
+    });
+
+    // Ordenar clientes alfabeticamente
+    const clientesOrdenados = Object.keys(cargasPorCliente).sort();
+
+    // Criar linhas agrupadas por cliente
+    clientesOrdenados.forEach(cliente => {
+      // Adicionar linha de cabeçalho do cliente
+      const headerRow = document.createElement("tr");
+      headerRow.className = "cliente-header";
+      headerRow.innerHTML = `
+        <td colspan="15" style="background-color: #f0f0f0; font-weight: bold;">
+          ${cliente}
+        </td>
+      `;
+      cargas.appendChild(headerRow);
+
+      // Adicionar cargas do cliente (ordenadas por data)
+      cargasPorCliente[cliente]
+        .sort((a, b) => new Date(a.datanfe) - new Date(b.datanfe))
+        .forEach(carga => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><input type="checkbox" class="row-checkbox" data-id="${carga.id}"></td>
+            <td>${carga.datanfe || ""}</td>
+            <td>${carga.placa || ""}</td>
+            <td>${carga.localizacao || ""}</td>
+            <td>${carga.status || ""}</td>                
+            <td>${carga.mercadoria || ""}</td>
+            <td>${carga.nfe || ""}</td>
+            <td>${carga.cte || ""}</td>
+            <td>${carga.previsao || ""}</td>
+            <td style="background-color: ${
+              carga.statusdiario?.trim().toLowerCase() === "sim"
+                ? "green"
+                : "red"
+            };">
+                ${carga.statusdiario || ""}
+            </td>
+            <td>${carga.cliente || ""}</td>
+            <td>
+                ${
+                  carga.telefone
+                    ? `<a href="https://wa.me/55${carga.telefone.replace(
+                        /\D/g,
+                        ""
+                      )}?text=${encodeURIComponent(
+                        getSaudacao() +
+                          `, ${carga.nome}, preciso saber sua localização.`
+                      )}" target="_blank">
+                    ${carga.telefone}
+                </a>`
+                    : ""
+                }
+            </td>
+            <td>${carga.nome || ""}</td>
+            <td>${carga.comentario || ""}</td>
+            <td>
+              <button class="btn-edit" onclick="editarCarga('${
+                carga.id
+              }')">Editar</button>
+              <button class="btn-delete" onclick="excluirCarga('${
+                carga.id
+              }')">Excluir</button>
+            </td>
+          `;
+          cargas.appendChild(tr);
+        });
     });
   } catch (error) {
     console.error("Erro ao carregar cargas: ", error);
     alert("Erro ao carregar cargas");
-  } finally{
+  } finally {
     loadingManager.hide();
   }
 }
@@ -111,6 +142,100 @@ window.excluirCarga = async (id) => {
 };
 
 window.addEventListener("load", carregarCarregamentos);
+
+// Função para selecionar/deselecionar todos os checkboxes
+window.toggleSelectAll = () => {
+  const selectAllCheckbox = document.getElementById('selectAll');
+  const checkboxes = document.querySelectorAll('.row-checkbox');
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = selectAllCheckbox.checked;
+  });
+};
+
+// Função para capturar e compartilhar apenas os motoristas selecionados
+window.captureAndShareSelected = async () => {
+  try {
+    const selectedRows = document.querySelectorAll('.row-checkbox:checked');
+    if (selectedRows.length === 0) {
+      alert('Por favor, selecione pelo menos um motorista para compartilhar.');
+      return;
+    }
+
+    // Cria um clone da tabela original
+    const originalTable = document.querySelector("table");
+    const clonedTable = originalTable.cloneNode(true);
+
+    // Remove as linhas não selecionadas
+    const clonedRows = clonedTable.querySelectorAll('tbody tr');
+    clonedRows.forEach((row, index) => {
+      const checkbox = document.querySelectorAll('.row-checkbox')[index];
+      if (!checkbox.checked) {
+        row.remove();
+      }
+    });
+
+    // Configurações para ocultar colunas
+    const hiddenColumns = ["Telefone", "Motorista", "Comentario", "Ações", "Selecionar"];
+    const clonedThs = clonedTable.querySelectorAll("thead th");
+    const clonedTrs = clonedTable.querySelectorAll("tbody tr");
+    const hiddenColumnIndices = [];
+
+    // Identifica colunas para ocultar
+    hiddenColumns.push("Status Diário");
+    clonedThs.forEach((th, index) => {
+      if (hiddenColumns.includes(th.textContent.trim())) {
+        hiddenColumnIndices.push(index);
+        th.style.display = "none";
+      }
+    });
+
+    // Oculta células nas linhas
+    clonedTrs.forEach((tr) => {
+      hiddenColumnIndices.forEach((index) => {
+        if (tr.cells[index]) {
+          tr.cells[index].style.display = "none";
+        }
+      });
+    });
+
+    // Posiciona o clone fora da tela
+    clonedTable.style.position = "absolute";
+    clonedTable.style.left = "-9999px";
+    document.body.appendChild(clonedTable);
+
+    // Captura a imagem do clone
+    const canvas = await html2canvas(clonedTable);
+    document.body.removeChild(clonedTable);
+
+    const blob = await new Promise((resolve) =>
+      canvas.toBlob(resolve, "image/png")
+    );
+    const file = new File([blob], "monitoramento_cargas.png", {
+      type: "image/png",
+    });
+
+    // Verifica se o navegador suporta o Web Share API
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: "Monitoramento de Cargas",
+          text: "Relatório de Monitoramento de Cargas",
+        });
+      } catch (error) {
+        // Se der erro na API de compartilhamento, usa o fallback do WhatsApp Web
+        shareViaWhatsApp(canvas.toDataURL());
+      }
+    } else {
+      // Fallback para WhatsApp Web direto
+      shareViaWhatsApp(canvas.toDataURL());
+    }
+
+  } catch (error) {
+    console.error("Erro ao capturar ou compartilhar:", error);
+    alert("Erro ao compartilhar a imagem");
+  }
+};
 
 window.captureAndShare = async () => {
   try {

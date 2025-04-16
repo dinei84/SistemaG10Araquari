@@ -43,6 +43,7 @@ async function loadCarregamentoForEdit(carregamentoId) {
         document.querySelector(
           `input[name="statusdiario"][value="${carregamento.statusdiario}"]`
         ).checked = true;
+        document.getElementById("cliente").value = carregamento.cliente;
         document.getElementById("telefone").value = carregamento.telefone;
         document.getElementById("nome").value = carregamento.nome;
         document.getElementById("comentario").value = carregamento.comentario;
@@ -73,6 +74,7 @@ document.getElementById("carga-form").addEventListener("submit", async (e) => {
   const statusdiario = document.querySelector(
     'input[name="statusdiario"]:checked'
   ).value;
+  const cliente = document.getElementById("cliente").value;
   const telefone = document.getElementById("telefone").value;
   const nome = document.getElementById("nome").value;
   const comentario = document.getElementById("comentario").value;
@@ -86,6 +88,7 @@ document.getElementById("carga-form").addEventListener("submit", async (e) => {
     nfe,
     cte,
     previsao,
+    cliente,
     statusdiario,
     telefone,
     nome,
