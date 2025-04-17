@@ -155,22 +155,30 @@ window.toggleSelectAll = () => {
 // Função para capturar e compartilhar apenas os motoristas selecionados
 window.captureAndShareSelected = async () => {
   try {
-    const selectedRows = document.querySelectorAll('.row-checkbox:checked');
-    if (selectedRows.length === 0) {
+    const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+    if (selectedCheckboxes.length === 0) {
       alert('Por favor, selecione pelo menos um motorista para compartilhar.');
       return;
     }
 
-    // Cria um clone da tabela original
-    const originalTable = document.querySelector("table");
-    const clonedTable = originalTable.cloneNode(true);
+    // Obter os IDs dos itens selecionados
+    const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.id);
 
-    // Remove as linhas não selecionadas
-    const clonedRows = clonedTable.querySelectorAll('tbody tr');
-    clonedRows.forEach((row, index) => {
-      const checkbox = document.querySelectorAll('.row-checkbox')[index];
-      if (!checkbox.checked) {
-        row.remove();
+    // Cria um clone da tabela original (apenas cabeçalho)
+    const originalTable = document.querySelector("table");
+    const clonedTable = originalTable.cloneNode(false); // false para pegar apenas o thead
+    const clonedThead = originalTable.querySelector('thead').cloneNode(true);
+    const clonedTbody = document.createElement('tbody');
+    clonedTable.appendChild(clonedThead);
+    clonedTable.appendChild(clonedTbody);
+
+    // Adicionar apenas as linhas selecionadas
+    const originalRows = document.querySelectorAll('tbody tr');
+    originalRows.forEach(row => {
+      const checkbox = row.querySelector('.row-checkbox');
+      // Verifica se é uma linha de dados (tem checkbox) e se está selecionada
+      if (checkbox && selectedIds.includes(checkbox.dataset.id)) {
+        clonedTbody.appendChild(row.cloneNode(true));
       }
     });
 
@@ -233,7 +241,7 @@ window.captureAndShareSelected = async () => {
 
   } catch (error) {
     console.error("Erro ao capturar ou compartilhar:", error);
-    alert("Erro ao compartilhar a imagem");
+    alert("Erro ao compartilhar a imagem: " + error.message);
   }
 };
 
