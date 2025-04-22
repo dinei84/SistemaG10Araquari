@@ -4,23 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/menu.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="shortcut icon" href="../assets/favcom.png" type="image/x-icon">
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=note_alt" />
-    <title>Início</title>
+    <link rel="stylesheet" href="../../css/menu.css">
+    <link rel="stylesheet" href="../../css/chat.css">
+    <link rel="shortcut icon" href="../../assets/favcom.png" type="image/x-icon">
+    <title>Chat</title>
 </head>
 
 <body>
-    
     <nav class="sidebar">
         <div class="hamburger-menu">
             <div class="hamburger"></div>
         </div>
         <ul class="nav-list">
             <li>
-                <a href="PLANILHA/lista_fretes.html">
+                <a href="../PLANILHA/lista_fretes.html">
                     <i class="fas fa-table"><svg xmlns="http://www.w3.org/2000/svg" height="30px"
                             viewBox="0 -960 960 960" width="30px" fill="#FFFFFF">
                             <path
@@ -40,7 +37,7 @@
                 </a>
             </li>
             <li>
-                <a href="CHAT/chat.html">
+                <a href="../CHAT/chat.html" class="active">
                     <i class="fas fa-comments"><svg xmlns="http://www.w3.org/2000/svg" height="30px"
                             viewBox="0 -960 960 960" width="30px" fill="#FFFFFF">
                             <path
@@ -50,7 +47,7 @@
                 </a>
             </li>
             <li>
-                <a href="CALCULADORAS/calculadoras.html">
+                <a href="../CALCULADORAS/calculadoras.html">
                     <i class="fas fa-calculator"><svg xmlns="http://www.w3.org/2000/svg" height="30px"
                             viewBox="0 -960 960 960" width="30px" fill="#FFFFFF">
                             <path
@@ -60,7 +57,7 @@
                 </a>
             </li>
             <li>
-                <a href="OC/oc.html">
+                <a href="../OC/oc.html">
                     <i class="material-icons"><svg xmlns="http://www.w3.org/2000/svg" height="30px"
                             viewBox="0 -960 960 960" width="30px" fill="white">
                             <path
@@ -70,7 +67,7 @@
                 </a>
             </li>
             <li>
-                <a href="CONTATOS/contato.html">
+                <a href="../CONTATOS/contato.html">
                     <i class="fas fa-address-book"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
                             viewBox="0 -960 960 960" width="24px" fill="#FFFFFF">
                             <path
@@ -80,7 +77,7 @@
                 </a>
             </li>
             <li>
-                <a href="MOSTRADOR/index1.html">
+                <a href="../MOSTRADOR/index1.html">
                     <i class="fas fa-tv"><svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960"
                             width="30px" fill="#FFFFFF">
                             <path
@@ -91,7 +88,7 @@
             </li>
 
             <li>
-                <a href="TRACKING/indextracking.html">
+                <a href="../TRACKING/indextracking.html">
                     <i class="fas fa-truck"><svg xmlns="http://www.w3.org/2000/svg" height="30px"
                             viewBox="0 -960 960 960" width="30px" fill="#FFFFFF">
                             <path
@@ -102,7 +99,7 @@
             </li>
 
             <li>
-                <a href="dashboard.html">
+                <a href="../dashboard.html">
                     <i class="fas fa-home"><svg xmlns="http://www.w3.org/2000/svg" height="30px"
                             viewBox="0 -960 960 960" width="30px" fill="#FFFFFF">
                             <path
@@ -111,16 +108,40 @@
                     <span>Início</span>
                 </a>
             </li>
-
         </ul>
     </nav>
 
-    <header class="hello">
-        <h1>Ola Time Araquari!</h1>
+    <div class="chat-container">
+        <div class="chat-sidebar">
+            <div class="chat-header">
+                <h2>Chat Team Araquari</h2>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar"></div>
+                <div class="user-name" id="userName">Carregando...</div>
+            </div>
+            <div class="online-users">
+                <h3>Usuários Online</h3>
+                <ul id="onlineUsersList">
+                    <!-- Lista de usuários online será preenchida dinamicamente -->
+                </ul>
+            </div>
+        </div>
 
-        <aside class="team">
-            <img src="assets/team350.jpeg" alt="">
-        </aside>
+        <div class="chat-main">
+            <div class="chat-messages" id="chatMessages">
+                <!-- Mensagens serão preenchidas dinamicamente -->
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="messageInput" placeholder="Digite sua mensagem..." />
+                <button id="sendButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#FFFFFF">
+                        <path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <button id="logoutBtn" class="logout-button">
         <i class="fas fa-sign-out-alt">
@@ -131,47 +152,8 @@
         Sair
     </button>
 
-    <style>
-        .logout-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #721738;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.3s;
-        }
-
-        .logout-button:hover {
-            background: #560e24;
-        }
-    </style>
-
-    <script type="module">
-        import { auth } from "/js/firebase-config.js";
-        import { signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                window.location.href = '../index.html';
-            } catch (error) {
-                console.error("Erro ao fazer logout:", error);
-            }
-        });
-    </script>
-    </header>
-
-
-    <script src="https://kit.fontawesome.com/your-code.js"></script>
-    <script src="../js/menu.js"></script>
-    <script src="../js/interface.js"></script>
+    <script src="../../js/menu.js"></script>
+    <script type="module" src="../../js/chat.js"></script>
 </body>
 
 </html>
